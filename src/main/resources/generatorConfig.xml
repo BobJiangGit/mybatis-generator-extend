@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+    <properties resource="generatorConfig.properties" />
+
+    <context id="mysqlMap" targetRuntime="MyBatis3">
+        <property name="javaFileEncoding" value="UTF-8"/>
+
+        <plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
+        <plugin type="org.mybatis.generator.plugins.ToStringPlugin" />
+        <plugin type="org.mybatis.generator.plugins.EqualsHashCodePlugin" />
+
+        <commentGenerator>
+            <property name="suppressAllComments" value="true" />
+        </commentGenerator>
+
+        <jdbcConnection driverClass="${jdbc.driverClassName}"
+            connectionURL="${jdbc.url}"
+            userId="${jdbc.username}"
+            password="${jdbc.password}">
+        </jdbcConnection>
+
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false" />
+        </javaTypeResolver>
+
+        <javaModelGenerator targetPackage="${modelTargetPackage}" targetProject="${modelTargetDir}" />
+        <sqlMapGenerator targetPackage="${xmlTargetPackage}" targetProject="${xmlTargetDir}" />
+        <javaClientGenerator targetPackage="${daoTargetPackage}" targetProject="${daoTargetDir}" type="XMLMAPPER" />
+        <!--<javaClientGenerator targetPackage="${daoTargetPackage}" targetProject="${daoTargetDir}" type="ANNOTATEDMAPPER" />-->
+
+        <table tableName="content_program" alias="program" enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+        </table>
+        
+	</context>
+</generatorConfiguration> 
