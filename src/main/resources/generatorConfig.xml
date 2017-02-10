@@ -8,18 +8,20 @@
     <context id="mysqlMap" targetRuntime="MyBatis3">
         <property name="javaFileEncoding" value="UTF-8"/>
 
-        <plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
         <plugin type="org.mybatis.generator.plugins.ToStringPlugin" />
+
         <plugin type="org.mybatis.generator.plugins.EqualsHashCodePlugin" />
 
-        <commentGenerator>
-            <property name="suppressAllComments" value="true" />
+        <commentGenerator type="org.mybatis.generator.extend.internal.CustomCommentGenerator">
+            <property name="suppressAllComments" value="false" />
         </commentGenerator>
 
         <jdbcConnection driverClass="${jdbc.driverClassName}"
-            connectionURL="${jdbc.url}"
-            userId="${jdbc.username}"
-            password="${jdbc.password}">
+                connectionURL="${jdbc.url}"
+                userId="${jdbc.username}"
+                password="${jdbc.password}">
+            <property name="remarksReporting" value="true"></property>
+            <property name="useInformationSchema" value="true"></property>
         </jdbcConnection>
 
         <javaTypeResolver>
@@ -34,7 +36,6 @@
         <table tableName="content_program" alias="program" enableCountByExample="false"
                enableUpdateByExample="false" enableDeleteByExample="false"
                enableSelectByExample="false" selectByExampleQueryId="false">
-            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
         </table>
         
 	</context>
