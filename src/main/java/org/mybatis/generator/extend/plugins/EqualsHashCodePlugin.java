@@ -13,9 +13,12 @@ import org.mybatis.generator.api.dom.java.Parameter;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.internal.util.JavaBeansUtil;
 
+/**
+ * 重写equals方法和hashCode方法
+ *
+ * Created by Bob Jiang on 2017/2/10.
+ */
 public class EqualsHashCodePlugin extends PluginAdapter {
-    public EqualsHashCodePlugin() {
-    }
 
     public boolean validate(List<String> warnings) {
         return true;
@@ -26,7 +29,7 @@ public class EqualsHashCodePlugin extends PluginAdapter {
         if(introspectedTable.getRules().generateRecordWithBLOBsClass()) {
             columns = introspectedTable.getNonBLOBColumns();
         } else {
-            columns = introspectedTable.getAllColumns();
+            columns = introspectedTable.getPrimaryKeyColumns();
         }
 
         this.generateEquals(topLevelClass, columns, introspectedTable);

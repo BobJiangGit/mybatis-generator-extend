@@ -1,4 +1,4 @@
-package org.mybatis.generator.extend.mapper;
+package org.mybatis.generator.extend.service;
 
 import org.mybatis.generator.extend.model.BaseModel;
 
@@ -6,11 +6,11 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * GenericMapper
+ * GenericService
  *
- * Created by Bob Jiang on 2017/2/10.
+ * Created by Bob Jiang on 2017/2/13.
  */
-public interface GenericMapper<T extends BaseModel<PK>, PK extends Serializable> {
+public interface GenericService<T extends BaseModel<PK>, PK extends Serializable> {
 
     /**
      * 按主键删除数据，物理删除

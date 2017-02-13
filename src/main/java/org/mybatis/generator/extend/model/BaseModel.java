@@ -3,6 +3,8 @@ package org.mybatis.generator.extend.model;
 import java.io.Serializable;
 
 /**
+ * BaseModel
+ *
  * Created by Bob Jiang on 2017/2/10.
  */
 public class BaseModel<PK extends Serializable> implements Serializable {

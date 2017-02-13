@@ -9,33 +9,70 @@
         <property name="javaFileEncoding" value="UTF-8"/>
 
         <plugin type="org.mybatis.generator.plugins.ToStringPlugin" />
+        <plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
+        <!--重写Model的equals和hashCode方法-->
+        <plugin type="org.mybatis.generator.extend.plugins.EqualsHashCodePlugin" />
 
-        <plugin type="org.mybatis.generator.plugins.EqualsHashCodePlugin" />
+        <!--修改Model的父类，注释，主键属性-->
+        <plugin type="org.mybatis.generator.extend.plugins.BaseModelGeneratorPlugin">
+            <property name="modelTargetPackage" value="${modelTargetPackage}"/>
+        </plugin>
 
-        <commentGenerator type="org.mybatis.generator.extend.internal.CustomCommentGenerator">
-            <property name="suppressAllComments" value="false" />
-        </commentGenerator>
+        <!--Mapper接口生成器，生成的接口会继承GenericMapper-->
+        <plugin type="org.mybatis.generator.extend.plugins.GenericMapperGeneratorPlugin">
+            <property name="mapperTargetDir" value="${mapperTargetDir}"/>
+            <property name="mapperTargetPackage" value="${mapperTargetPackage}"/>
+        </plugin>
+
+        <!--Service接口生成器，若不需要生成Service接口，可以将此插件删掉-->
+        <plugin type="org.mybatis.generator.extend.plugins.GenericServiceGeneratorPlugin">
+            <property name="serviceTargetDir" value="${serviceTargetDir}"/>
+            <property name="serviceTargetPackage" value="${serviceTargetPackage}"/>
+        </plugin>
+
+        <!--Service实现类生成器，若不需要生成Service实现类，可以将此插件删掉-->
+        <plugin type="org.mybatis.generator.extend.plugins.GenericServiceImplGeneratorPlugin">
+            <property name="serviceTargetDir" value="${serviceTargetDir}"/>
+            <property name="serviceTargetPackage" value="${serviceTargetPackage}"/>
+            <property name="mapperTargetPackage" value="${mapperTargetPackage}"/>
+        </plugin>
+
+        <!--selectAll方法生成器-->
+        <plugin type="org.mybatis.generator.extend.plugins.SelectAllSqlMapGeneratorPlugin"/>
+
+        <!--自定义的注释生成器-->
+        <commentGenerator type="org.mybatis.generator.extend.internal.CustomCommentGenerator"/>
 
         <jdbcConnection driverClass="${jdbc.driverClassName}"
                 connectionURL="${jdbc.url}"
                 userId="${jdbc.username}"
-                password="${jdbc.password}">
-            <property name="remarksReporting" value="true"></property>
-            <property name="useInformationSchema" value="true"></property>
-        </jdbcConnection>
+                password="${jdbc.password}"/>
 
         <javaTypeResolver>
             <property name="forceBigDecimals" value="false" />
         </javaTypeResolver>
 
-        <javaModelGenerator targetPackage="${modelTargetPackage}" targetProject="${modelTargetDir}" />
-        <sqlMapGenerator targetPackage="${xmlTargetPackage}" targetProject="${xmlTargetDir}" />
-        <javaClientGenerator targetPackage="${daoTargetPackage}" targetProject="${daoTargetDir}" type="XMLMAPPER" />
-        <!--<javaClientGenerator targetPackage="${daoTargetPackage}" targetProject="${daoTargetDir}" type="ANNOTATEDMAPPER" />-->
+        <!--model生成器-->
+        <javaModelGenerator targetPackage="${modelTargetPackage}" targetProject="${modelTargetDir}">
+            <property name="enableSubPackages" value="true" />
+        </javaModelGenerator>
 
-        <table tableName="content_program" alias="program" enableCountByExample="false"
-               enableUpdateByExample="false" enableDeleteByExample="false"
+        <!--xml生成器-->
+        <sqlMapGenerator targetPackage="${xmlTargetPackage}" targetProject="${xmlTargetDir}">
+            <property name="enableSubPackages" value="true" />
+        </sqlMapGenerator>
+
+        <!--
+            tableName: 表名称。
+            alias: 别名，在sql中会应用到，方便联合查询。
+            domainObjectName: Model类名称，默认为表的驼峰名称，若需指定子包，可以"模块名称.类名"规则命名。
+            *ByExample: 指定是否生成相关Example的方法。
+        -->
+        <table tableName="content_program" alias="program" domainObjectName="content.ContentProgram"
+               enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"
                enableSelectByExample="false" selectByExampleQueryId="false">
+            <!--sqlStatement指定为JDBC即可-->
+            <generatedKey column="id" sqlStatement="JDBC"/>
         </table>
         
 	</context>
