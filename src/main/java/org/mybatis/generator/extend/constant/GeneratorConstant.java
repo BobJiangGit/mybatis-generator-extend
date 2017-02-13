@@ -13,4 +13,10 @@ public interface GeneratorConstant {
 
     String GENERIC_SERVICE_IMPL_CLASS_PATH = "org.mybatis.generator.extend.service.impl.GenericServiceImpl";
 
+    String AUTOWIRED_CLASS_PATH = "org.springframework.beans.factory.annotation.Autowired";
+
+    String SERVICE_CLASS_PATH = "org.springframework.stereotype.Service";
+
+
+
 }

@@ -35,6 +35,8 @@
             <property name="serviceTargetDir" value="${serviceTargetDir}"/>
             <property name="serviceTargetPackage" value="${serviceTargetPackage}"/>
             <property name="mapperTargetPackage" value="${mapperTargetPackage}"/>
+            <!--是否添加spring注解，默认为添加-->
+            <property name="statement" value="true"/>
         </plugin>
 
         <!--selectAll方法生成器-->
