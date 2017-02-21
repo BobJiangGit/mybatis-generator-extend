@@ -57,7 +57,7 @@ public class GenericServiceGeneratorPlugin extends PluginAdapter {
             CompilationUnit unit = javaFile.getCompilationUnit();
             FullyQualifiedJavaType modelJavaType = unit.getType();
             String shortName = modelJavaType.getShortName();
-            if(!shortName.endsWith("Example")) {
+            if(!shortName.endsWith("Example") && !shortName.endsWith("Mapper") && !shortName.endsWith("SqlProvider")) {
                 String serviceName = shortName + "Service";
                 Interface serviceInterface = new Interface(this.serviceTargetPackage + packageName + "." + serviceName);
                 serviceInterface.setVisibility(JavaVisibility.PUBLIC);

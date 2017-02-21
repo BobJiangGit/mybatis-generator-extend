@@ -1,12 +1,7 @@
 package org.mybatis.generator.extend.plugins;
 
-import org.mybatis.generator.api.IntrospectedTable;
-import org.mybatis.generator.api.PluginAdapter;
-import org.mybatis.generator.api.dom.xml.Attribute;
-import org.mybatis.generator.api.dom.xml.Document;
-import org.mybatis.generator.api.dom.xml.TextElement;
-import org.mybatis.generator.api.dom.xml.XmlElement;
-
+import org.mybatis.generator.api.*;
+import org.mybatis.generator.api.dom.xml.*;
 import java.util.List;
 
 /**
@@ -23,7 +18,21 @@ public class SelectAllSqlMapGeneratorPlugin extends PluginAdapter {
         String alias = introspectedTable.getFullyQualifiedTable().getAlias();
         XmlElement parentElement = document.getRootElement();
 
-        // 产生分页语句前半部分
+//        try {
+//            String packageName = introspectedTable.getFullyQualifiedTable().getSubPackage(true);
+//            SqlMapGeneratorConfiguration configuration = introspectedTable.getContext().getSqlMapGeneratorConfiguration();
+//
+//            String fileName = introspectedTable.getFullyQualifiedTable().getDomainObjectName() + "Mapper.xml";
+//            File mapperDir = this.shellCallback.getDirectory(configuration.getTargetProject(), configuration.getTargetPackage() + "." + packageName);
+//            File mapperFile = new File(mapperDir, fileName);
+//            if(mapperFile.exists()) {
+////                return true;
+//            }
+//        } catch (ShellException e) {
+//            e.printStackTrace();
+//        }
+
+        // 生成查询语句Element
         XmlElement selectAllElement = new XmlElement("select");
         selectAllElement.addAttribute(new Attribute("id", "selectAll"));
         selectAllElement.addAttribute(new Attribute("resultMap", "BaseResultMap"));
@@ -33,4 +42,5 @@ public class SelectAllSqlMapGeneratorPlugin extends PluginAdapter {
         parentElement.addElement(selectAllElement);
         return super.sqlMapDocumentGenerated(document, introspectedTable);
     }
+
 }

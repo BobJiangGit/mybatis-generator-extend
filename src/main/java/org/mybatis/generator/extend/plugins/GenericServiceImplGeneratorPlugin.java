@@ -21,7 +21,7 @@ import java.util.List;
 public class GenericServiceImplGeneratorPlugin extends PluginAdapter {
 
     private String serviceTargetDir;
-    private String serviceTargetPackageImpl;
+    private String serviceTargetPackage;
     private String mapperTargetPackage;
     private Boolean statement;
 
@@ -35,7 +35,7 @@ public class GenericServiceImplGeneratorPlugin extends PluginAdapter {
         String serviceTargetDir = this.properties.getProperty("serviceTargetDir");
         this.serviceTargetDir = serviceTargetDir;
         String serviceTargetPackage = this.properties.getProperty("serviceTargetPackage");
-        this.serviceTargetPackageImpl = serviceTargetPackage;
+        this.serviceTargetPackage = serviceTargetPackage;
         String mapperTargetPackage = this.properties.getProperty("mapperTargetPackage");
         this.mapperTargetPackage = mapperTargetPackage;
         String statement = this.properties.getProperty("statement");
@@ -45,7 +45,7 @@ public class GenericServiceImplGeneratorPlugin extends PluginAdapter {
     }
 
     public List<GeneratedJavaFile> contextGenerateAdditionalJavaFiles(IntrospectedTable introspectedTable) {
-        ArrayList<GeneratedJavaFile> mapperJavaFiles = new ArrayList<GeneratedJavaFile>();
+        ArrayList<GeneratedJavaFile> serviceImplJavaFiles = new ArrayList<GeneratedJavaFile>();
         JavaFormatter javaFormatter = this.context.getJavaFormatter();
 
         List<IntrospectedColumn> primaryKeyColumns = introspectedTable.getPrimaryKeyColumns();
@@ -61,9 +61,9 @@ public class GenericServiceImplGeneratorPlugin extends PluginAdapter {
             CompilationUnit unit = javaFile.getCompilationUnit();
             FullyQualifiedJavaType modelJavaType = unit.getType();
             String shortName = modelJavaType.getShortName();
-            if(!shortName.endsWith("Example")) {
+            if(!shortName.endsWith("Example") && !shortName.endsWith("Mapper") && !shortName.endsWith("SqlProvider")) {
                 String serviceName = shortName + "ServiceImpl";
-                TopLevelClass serviceImplClass = new TopLevelClass(this.serviceTargetPackageImpl + packageName + ".impl." + serviceName);
+                TopLevelClass serviceImplClass = new TopLevelClass(this.serviceTargetPackage + packageName + ".impl." + serviceName);
                 serviceImplClass.setVisibility(JavaVisibility.PUBLIC);
                 serviceImplClass.addImportedType(modelJavaType);
 
@@ -83,25 +83,25 @@ public class GenericServiceImplGeneratorPlugin extends PluginAdapter {
 
                 Method mapperMethod = new Method();
                 Field mapperField = new Field();
+                mapperField.setType(mapperType);
+                mapperField.setName(GeneratorUtil.convertLowCaseFieldName(shortName + "Mapper"));
+                mapperField.setVisibility(JavaVisibility.PRIVATE);
 
                 if (statement) {
                     FullyQualifiedJavaType autowired = new FullyQualifiedJavaType(GeneratorConstant.AUTOWIRED_CLASS_PATH);
                     FullyQualifiedJavaType service = new FullyQualifiedJavaType(GeneratorConstant.SERVICE_CLASS_PATH);
+                    FullyQualifiedJavaType transactional = new FullyQualifiedJavaType(GeneratorConstant.TRANSACTIONAL_CLASS_PATH);
                     serviceImplClass.addImportedType(autowired);
                     serviceImplClass.addImportedType(service);
+                    serviceImplClass.addImportedType(transactional);
 
-                    serviceImplClass.addAnnotation("@Service");
                     mapperField.addAnnotation("@Autowired");
-                    mapperMethod.addBodyLine("return " + mapperField.getName() + ";");
-                } else {
-                    mapperMethod.addBodyLine("return null;");
+                    serviceImplClass.addAnnotation("@Service");
+                    serviceImplClass.addAnnotation("@Transactional");
                 }
 
-                mapperField.setType(mapperType);
-                mapperField.setName(shortName + "Mapper");
-                mapperField.setVisibility(JavaVisibility.PRIVATE);
                 serviceImplClass.addField(mapperField);
-
+                mapperMethod.addBodyLine("return " + mapperField.getName() + ";");
                 mapperMethod.setName("getGenericMapper");
                 mapperMethod.setVisibility(JavaVisibility.PUBLIC);
                 mapperMethod.addAnnotation("@Override");
@@ -116,19 +116,23 @@ public class GenericServiceImplGeneratorPlugin extends PluginAdapter {
                 superImplType.addTypeArgument(pkType);
                 serviceImplClass.setSuperClass(superImplType);
 
+                FullyQualifiedJavaType serviceType = new FullyQualifiedJavaType(this.serviceTargetPackage + packageName + "." + shortName + "Service");
+                serviceImplClass.addImportedType(serviceType);
+                serviceImplClass.addSuperInterface(serviceType);
+
                 try {
                     GeneratedJavaFile file = new GeneratedJavaFile(serviceImplClass, this.serviceTargetDir, javaFormatter);
-                    File mapperDir = this.shellCallback.getDirectory(this.serviceTargetDir, this.serviceTargetPackageImpl + packageName + ".impl");
-                    File mapperFile = new File(mapperDir, file.getFileName());
-                    if(!mapperFile.exists()) {
-                        mapperJavaFiles.add(file);
+                    File serviceImplDir = this.shellCallback.getDirectory(this.serviceTargetDir, this.serviceTargetPackage + packageName + ".impl");
+                    File serviceImplFile = new File(serviceImplDir, file.getFileName());
+                    if(!serviceImplFile.exists()) {
+                        serviceImplJavaFiles.add(file);
                     }
                 } catch (ShellException e) {
                     e.printStackTrace();
                 }
             }
         }
-        return mapperJavaFiles;
+        return serviceImplJavaFiles;
     }
 
 }

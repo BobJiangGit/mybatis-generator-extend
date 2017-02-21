@@ -17,6 +17,8 @@ public interface GeneratorConstant {
 
     String SERVICE_CLASS_PATH = "org.springframework.stereotype.Service";
 
+    String TRANSACTIONAL_CLASS_PATH = "org.springframework.transaction.annotation.Transactional";
+
 
 
 }
