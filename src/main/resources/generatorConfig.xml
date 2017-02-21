@@ -36,7 +36,7 @@
             <property name="serviceTargetPackage" value="${serviceTargetPackage}"/>
             <property name="mapperTargetPackage" value="${mapperTargetPackage}"/>
             <!--是否添加spring注解，默认为添加-->
-            <property name="statement" value="true"/>
+            <property name="statement" value="false"/>
         </plugin>
 
         <!--selectAll方法生成器-->
@@ -65,12 +65,24 @@
         </sqlMapGenerator>
 
         <!--
+        <javaClientGenerator type="ANNOTATEDMAPPER"
+            targetPackage="${mapperTargetPackage}" targetProject="${mapperTargetDir}"/>
+        -->
+
+        <!--
             tableName: 表名称。
             alias: 别名，在sql中会应用到，方便联合查询。
             domainObjectName: Model类名称，默认为表的驼峰名称，若需指定子包，可以"模块名称.类名"规则命名。
             *ByExample: 指定是否生成相关Example的方法。
         -->
-        <table tableName="content_program" alias="program" domainObjectName="content.ContentProgram"
+        <table tableName="admin_account" alias="account" domainObjectName="auth.AdminAccount"
+               enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+            <!--sqlStatement指定为JDBC即可-->
+            <generatedKey column="id" sqlStatement="JDBC"/>
+        </table>
+
+        <table tableName="admin_role" alias="role" domainObjectName="auth.AdminRole"
                enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"
                enableSelectByExample="false" selectByExampleQueryId="false">
             <!--sqlStatement指定为JDBC即可-->
