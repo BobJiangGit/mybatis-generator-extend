@@ -24,7 +24,6 @@ import org.mybatis.generator.internal.util.StringUtility;
 public class CustomCommentGenerator implements CommentGenerator {
 
     private Properties properties = new Properties();
-    private boolean suppressDate = false;
     private boolean suppressAllComments = false;
 
     public CustomCommentGenerator() {
@@ -32,7 +31,6 @@ public class CustomCommentGenerator implements CommentGenerator {
 
     public void addConfigurationProperties(Properties properties) {
         this.properties.putAll(properties);
-        this.suppressDate = StringUtility.isTrue(properties.getProperty("suppressDate"));
         this.suppressAllComments = StringUtility.isTrue(properties.getProperty("suppressAllComments"));
     }
 

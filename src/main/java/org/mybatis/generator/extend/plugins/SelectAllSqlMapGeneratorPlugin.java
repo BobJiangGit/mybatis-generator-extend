@@ -15,7 +15,6 @@ public class SelectAllSqlMapGeneratorPlugin extends PluginAdapter {
 
     public boolean sqlMapDocumentGenerated(Document document, IntrospectedTable introspectedTable) {
         String tableName = introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime();
-        String alias = introspectedTable.getFullyQualifiedTable().getAlias();
         XmlElement parentElement = document.getRootElement();
 
 //        try {
@@ -37,7 +36,7 @@ public class SelectAllSqlMapGeneratorPlugin extends PluginAdapter {
         selectAllElement.addAttribute(new Attribute("id", "selectAll"));
         selectAllElement.addAttribute(new Attribute("resultMap", "BaseResultMap"));
 
-        String sql = "select <include refid=\"Base_Column_List\" /> from " + tableName + " " + alias;
+        String sql = "select <include refid=\"Base_Column_List\" /> from " + tableName;
         selectAllElement.addElement(new TextElement(sql));
         parentElement.addElement(selectAllElement);
         return super.sqlMapDocumentGenerated(document, introspectedTable);
